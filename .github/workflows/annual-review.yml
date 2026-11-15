@@ -1,0 +1,22 @@
+name: Annual source review
+on:
+  schedule:
+    - cron: '0 12 1 11 *'
+  workflow_dispatch:
+permissions:
+  issues: write
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Open annual website review issue (no scraping)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          YEAR="$(date -u +%Y)"
+          TITLE="Annual Turistren website and GTFS review ($YEAR)"
+          if gh issue list --state all --limit 100 --json title --jq '.[].title' | grep -Fxq "$TITLE"; then
+            echo "Issue already exists"; exit 0
+          fi
+          gh issue create --title "$TITLE" --body "Manual annual check, not a scraper.\n\n- [ ] Review https://turistren.com.co/planifica-tu-viaje/ and https://turistren.com.co/preguntas-frecuentes/\n- [ ] Confirm station stops, times, service days, exceptions, and separate seasonal trains.\n- [ ] Verify provisional Usaquén timings and stop positions.\n- [ ] Update build horizon to cover at least the coming year and rebuild the holidays calendar using Python holidays.\n- [ ] Verify committed OSM shape is still correct; do not re-download unnecessarily.\n- [ ] Run MobilityData validation.\n- [ ] Manually dispatch Build and validate GTFS with publish=true only if validated."
