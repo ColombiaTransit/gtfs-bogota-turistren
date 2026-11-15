@@ -66,9 +66,9 @@ def build(start, end, output, shape_path):
         "agency.txt": [{"agency_id": "TURISTREN", "agency_name": "Turistren",
                         "agency_url": "https://turistren.com.co/", "agency_timezone": "America/Bogota", "agency_lang": "es"}],
         "stops.txt": [
-            {"stop_id": "GRAN_ESTACION", "stop_name": "Gran Estación (plataforma férrea)", "stop_lat": 4.648994605275174, "stop_lon": -74.10198771838998, "location_type": 0},
-            {"stop_id": "USAQUEN", "stop_name": "Estación de Usaquén", "stop_lat": 4.69063, "stop_lon": -74.03803, "location_type": 0},
-            {"stop_id": "ZIPAQUIRA", "stop_name": "Estación de Zipaquirá", "stop_lat": 5.02164, "stop_lon": -74.00115, "location_type": 0},
+            {"stop_id": "GRAN_ESTACION", "stop_name": "Gran Estación (plataforma férrea)", "stop_lat": 4.648591475, "stop_lon": -74.102648075, "location_type": 0},
+            {"stop_id": "USAQUEN", "stop_name": "Estación de Usaquén", "stop_lat": 4.6906267, "stop_lon": -74.0380325, "location_type": 0},
+            {"stop_id": "ZIPAQUIRA", "stop_name": "Estación de Zipaquirá", "stop_lat": 5.0216378, "stop_lon": -74.0011517, "location_type": 0},
         ],
         "routes.txt": [{"route_id": "SABANA", "agency_id": "TURISTREN", "route_short_name": "Turistren",
                         "route_long_name": "Bogotá – Usaquén – Zipaquirá", "route_type": 2,
