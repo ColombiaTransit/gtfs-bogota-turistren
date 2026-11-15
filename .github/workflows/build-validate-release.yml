@@ -54,11 +54,11 @@ jobs:
             validation/
           if-no-files-found: warn
       - name: Require static verified OSM shape before release
-        if: (github.event_name == 'workflow_dispatch' && inputs.publish == true) || (github.event_name == 'push' && github.event.head_commit.message == 'Retry initial validated Turistren release')
+        if: github.event_name == 'workflow_dispatch' && inputs.publish == true
         run: |
           test -s data/rail_shape.geojson || { echo 'Publish blocked: verified static OSM rail geometry missing'; exit 1; }
       - name: Publish validated release to stable tag
-        if: (github.event_name == 'workflow_dispatch' && inputs.publish == true) || (github.event_name == 'push' && github.event.head_commit.message == 'Retry initial validated Turistren release')
+        if: github.event_name == 'workflow_dispatch' && inputs.publish == true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
