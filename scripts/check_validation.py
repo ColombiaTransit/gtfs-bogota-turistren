@@ -8,7 +8,7 @@ if not report_path.exists() or not system_path.exists():
     raise SystemExit("Missing validator report files; release blocked")
 report = json.loads(report_path.read_text(encoding="utf-8"))
 system = json.loads(system_path.read_text(encoding="utf-8"))
-if system not in ([], {}, None):
+if system not in ([], {}, None, {"notices": []}):
     raise SystemExit(f"Validator system errors: {system}")
 if not isinstance(report, dict):
     raise SystemExit("Unknown validation report format")
