@@ -66,7 +66,7 @@ def build(start, end, output, shape_path):
         "agency.txt": [{"agency_id": "TURISTREN", "agency_name": "Turistren",
                         "agency_url": "https://turistren.com.co/", "agency_timezone": "America/Bogota", "agency_lang": "es"}],
         "stops.txt": [
-            {"stop_id": "GRAN_ESTACION", "stop_name": "Gran Estación (plataforma férrea)", "stop_lat": 4.648591475, "stop_lon": -74.102648075, "location_type": 0},
+            {"stop_id": "GRAN_ESTACION", "stop_name": "Gran Estación (plataforma férrea)", "stop_lat": 4.648994605275174, "stop_lon": -74.10198771838998, "location_type": 0},
             {"stop_id": "USAQUEN", "stop_name": "Estación de Usaquén", "stop_lat": 4.6906267, "stop_lon": -74.0380325, "location_type": 0},
             {"stop_id": "ZIPAQUIRA", "stop_name": "Estación de Zipaquirá", "stop_lat": 5.0216378, "stop_lon": -74.0011517, "location_type": 0},
         ],
@@ -87,11 +87,11 @@ def build(start, end, output, shape_path):
                            "feed_lang": "es", "feed_start_date": fmt(start), "feed_end_date": fmt(end),
                            "feed_version": f"{fmt(start)}-{fmt(end)}"}],
     }
-    # Turistren official website publishes only Usaquén departure (09:15) and return arrival (16:45).
-    # The other intermediate timings are provisional, from the ticket partner, pending review.
+    # Turistren only publishes Usaquén outbound departure 09:15 and inbound arrival 16:45.
+    # Use the published time for both fields because no dwell times are officially supplied.
     for trip, stops in [
-        ("OUTBOUND", [("GRAN_ESTACION", "08:45:00", "08:45:00"), ("USAQUEN", "09:05:00", "09:15:00"), ("ZIPAQUIRA", "10:45:00", "10:45:00")]),
-        ("INBOUND", [("ZIPAQUIRA", "15:15:00", "15:15:00"), ("USAQUEN", "16:45:00", "16:50:00"), ("GRAN_ESTACION", "17:15:00", "17:15:00")]),
+        ("OUTBOUND", [("GRAN_ESTACION", "08:45:00", "08:45:00"), ("USAQUEN", "09:15:00", "09:15:00"), ("ZIPAQUIRA", "10:45:00", "10:45:00")]),
+        ("INBOUND", [("ZIPAQUIRA", "15:15:00", "15:15:00"), ("USAQUEN", "16:45:00", "16:45:00"), ("GRAN_ESTACION", "17:15:00", "17:15:00")]),
     ]:
         for n, (stop, arr, dep) in enumerate(stops, 1):
             data["stop_times.txt"].append({"trip_id": trip, "arrival_time": arr, "departure_time": dep,
