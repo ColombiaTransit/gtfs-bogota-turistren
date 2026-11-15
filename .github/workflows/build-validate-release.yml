@@ -17,6 +17,9 @@ on:
         default: false
 permissions:
   contents: write
+concurrency:
+  group: turistren-gtfs-release
+  cancel-in-progress: false
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -54,13 +57,33 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && inputs.publish == true
         run: |
           test -s data/rail_shape.geojson || { echo 'Publish blocked: verified static OSM rail geometry missing'; exit 1; }
-      - name: Publish validated release
+      - name: Publish validated release to stable tag
         if: github.event_name == 'workflow_dispatch' && inputs.publish == true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG="turistren-$(date -u +%Y%m%d)-${GITHUB_RUN_NUMBER}"
-          gh release create "$TAG" dist/turistren-gtfs.zip \
-            --title "Turistren GTFS $TAG" \
-            --notes "Validated with MobilityData GTFS Validator v8.0.1. Source reviewed for the 2026-11-15 through 2027-11-14 validity window." \
-            --latest
+          set -euo pipefail
+          TAG="latest"
+          FILE="dist/turistren-gtfs.zip"
+
+          # Repoint the stable release tag to the commit that passed validation.
+          # Use the GitHub API so no git force-push credential setup is required.
+          if gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${TAG}" >/dev/null 2>&1; then
+            gh api --method PATCH "repos/${GITHUB_REPOSITORY}/git/refs/tags/${TAG}" \\
+              -f sha="${GITHUB_SHA}" -F force=true >/dev/null
+          else
+            gh api --method POST "repos/${GITHUB_REPOSITORY}/git/refs" \\
+              -f ref="refs/tags/${TAG}" -f sha="${GITHUB_SHA}" >/dev/null
+          fi
+
+          # Update the existing release and overwrite its asset, or create it
+          # when publishing for the first time. The download URL never changes.
+          if gh release view "${TAG}" >/dev/null 2>&1; then
+            gh release upload "${TAG}" "${FILE}" --clobber
+            gh release edit "${TAG}" --title "Turistren GTFS (latest)" \\
+              --notes "Validated by MobilityData GTFS Validator v8.0.1. GTFS service window: 2026-11-15 to 2027-11-14." --latest
+          else
+            gh release create "${TAG}" "${FILE}" \\
+              --title "Turistren GTFS (latest)" \\
+              --notes "Validated by MobilityData GTFS Validator v8.0.1. GTFS service window: 2026-11-15 to 2027-11-14." --latest
+          fi
