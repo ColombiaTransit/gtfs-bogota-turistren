@@ -25,6 +25,12 @@ Output: `dist/turistren-gtfs.zip`.
 Rail geometry must be extracted from OpenStreetMap **once**, verified and committed as `data/rail_shape.geojson` (LineString ordered Gran Estación -> Usaquén -> Zipaquirá). Both trips reuse the line with reverse ordering for the return. Do not connect arbitrary straight lines or download OSM at every GTFS generation. The static OSM-based geometry has been committed to `data/rail_shape.geojson`; verify the alignment and station proximity before the first release.
 
 ## CI and releases
-`Build & validate GTFS` runs on push and manual dispatch. It downloads MobilityData GTFS Validator v8.0.1, archives JSON/HTML reports, and fails if ERROR notices or system errors are present. Only manual dispatch with `publish=true` can create a GitHub release, gated on validator success and existence of the committed OSM geometry. The release has `turistren-gtfs.zip`, with a stable latest URL after the first successful release.
+`Build & validate GTFS` runs on push and manual dispatch. It downloads MobilityData GTFS Validator v8.0.1, archives JSON/HTML reports, and fails if ERROR notices or system errors are present. Only manual dispatch with `publish=true` can create or update the GitHub release, gated on validator success and existence of the committed OSM geometry. All releases reuse the **fixed tag `latest`** and **fixed asset name `turistren-gtfs.zip`**. The asset is replaced on every validated manual publication; the tag points to the newly validated commit.
+
+Stable consumer download URL (available after first publication):
+
+`https://github.com/ColombiaTransit/gtfs-bogota-turistren/releases/download/latest/turistren-gtfs.zip`
+
+Normal code pushes never publish automatically.
 
 `Annual source review` opens a GitHub issue on November 1 each year (no automatic website scraping or schedule changes). Review official times, operation days, special trips, and source status; only then extend the service horizon and publish a validated feed.
